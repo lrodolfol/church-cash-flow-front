@@ -57,6 +57,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -71,7 +77,25 @@
               ],
               "outputHashing": "all"
             },
+            "uat": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.uat.ts"
+                }
+              ],
+              "buildOptimizer": true,
+              "optimization": true,
+              "sourceMap": true,
+              "vendorChunk": true
+            },
             "development": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
@@ -90,6 +114,9 @@
             },
             "development": {
               "browserTarget": "church:build:development"
+            },
+            "uat": {
+              "browserTarget": "church:build:uat"
             }
           },
           "defaultConfiguration": "development"
@@ -121,5 +148,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
