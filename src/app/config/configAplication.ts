@@ -1,11 +1,11 @@
 //import configData from './settings/settings-prd.json';
-import configData from './settings/enviroments/settings-dev.json';
+import { environment } from '../../environments/environment';
 
 export class configAplication {
   private static config: any;
 
   static loadConfig() {
-    var obj : any = configData;
+    var obj : any = environment;
   }
 
   static getConfig() {
@@ -13,10 +13,10 @@ export class configAplication {
   }
 
   static getApiHosy() {
-    return configData.api.host;
+    return environment.api.host;
   }
 
   static getObjCloudConfig(){
-    return configData.cloudServices;
+    return environment.cloudServices;
   }
 }
