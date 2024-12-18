@@ -1,31 +1,22 @@
 
-## Titulo
-Parte FrontEnd de caixa de igreja. Gerenciamento de caixa, membros e relatorio. #descontinuado.
+# FrontEnd Church - Tesouraria e Secretaria (em desenvolvimento)
+Parte FrontEnd de caixa de igreja. Gerenciamento completo de registros e ativdades
 
 - Angular V.16
 
 
-
+Doc gerados pelo angular:
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Rode `ng serve` para ambiente de dev. Navigate to `http://localhost:4200/`. 
+Rode `ng serve --configuration=uat` para ambiente de UAT. Navigate to `http://localhost:4200/`. 
+Rode `ng serve --configuration=prod` para ambiente de PROD. Navigate to `http://localhost:4200/`. 
 
-## Code scaffolding
+![Exemplo](https://raw.githubusercontent.com/lrodolfol/church-cash-flow-front/refs/heads/main/src/assets/img/exemple.png)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Acesse o backEnd: https://github.com/lrodolfol/church-cash-flow
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Autores
+- [Rodolfo Jesus - linkedin](https://www.linkedin.com/in/rodolfojesus/)
+- [Rodolfo Jesus - email](rodolfo0ti@gmail.com)
