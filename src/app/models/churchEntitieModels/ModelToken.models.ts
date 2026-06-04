@@ -10,7 +10,6 @@ export class ModelToken {
     role: string = "";
 
     firstName() : string {
-        console.log(this.unique_name.split(" ")[0]);
         return this.unique_name.split(" ")[0];
     }
     

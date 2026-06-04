@@ -10,7 +10,39 @@ export abstract class BaseService {
 
   constructor(protected http: HttpClient) {
     this.url = configAplication.getApiHosy();
-   }
+  }
+
+  public async getUrlPreSigned(): Promise<ResultViewModel> {
+    var auth = new AuthService();
+    const token = auth.getToken();
+
+    const httpHeaders = new HttpHeaders()
+      .set("Content-Type", "application/json; charset=utf-8")
+      .set("Authorization", `Bearer ${JSON.parse(token)}`);
+
+    var result: ResultViewModel;
+    var msgErro: string[];
+
+    const returnPromise = new Promise<ResultViewModel>((resolve, reject) => {
+      this.http.get<ResultViewModel>(`${this.url}/v1/${this.modelName}/UrlPreSignedPhoto`, { headers: httpHeaders })
+        .pipe(
+          catchError((error: any): Observable<ResultViewModel> => {
+            msgErro = error.error.erros;
+            return of<ResultViewModel>(error.error);
+          })
+        )
+        .subscribe({
+          next(value) {
+            resolve(value);
+          },
+          error(err) {
+            reject(err);
+          }
+        });
+    });
+
+    return returnPromise;
+  }
 
   public async create(model: any): Promise<ResultViewModel> {
     var auth = new AuthService();

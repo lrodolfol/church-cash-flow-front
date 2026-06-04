@@ -146,7 +146,6 @@ export class ChurchHadler extends BaseHandler {
 
     validateAddressEdit(model: AddressEditModel): boolean {
         var stringValidate = new StringUtil();
-        console.log(model.zipCode);
         if(!stringValidate.isNumeric(model.zipCode.toString().replace("-","")) || model.country.trim().length <= 3 || 
         model.state.trim().length <= 1 || model.city.trim().length <= 3 || model.district.trim().length <= 3 ||
         model.street.trim().length <= 3 || !stringValidate.isNumeric(model.number.toString()) ){

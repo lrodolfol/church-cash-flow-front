@@ -55,7 +55,6 @@ export class MeetingReportPageComponent {
         this.msgSuccesssOffering = this.handler.getMsgSuccess();
       })
       .catch((error) => {
-        console.log(error);
       });
     }
   }

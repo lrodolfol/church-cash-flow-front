@@ -12,7 +12,6 @@ import { MemberReadModel } from "../models/ReadModels/MemberRead.models";
 })
 
 export class MemberHandler extends BaseHandler {
-
     private service: MembersService;
 
     constructor(service: MembersService) {
@@ -28,6 +27,18 @@ export class MemberHandler extends BaseHandler {
     public async getByChurch(): Promise<ResultViewModel> {
         var result: ResultViewModel = await this.service.getMembersByChurch();
         return result;
+    }
+
+    public async getUrlPreSigned(): Promise<string> {
+        var result: ResultViewModel = await this.service.getUrlPreSigned();
+        if (result!.errors != null && result!.errors.length > 0) {
+            result!.errors.forEach(x => {
+                this.setMsgErro(x);
+            })
+            return "";
+        } else {
+            return result.data;
+        }
     }
 
     public async create(model: MemberEditModel): Promise<Boolean> {
@@ -62,24 +73,24 @@ export class MemberHandler extends BaseHandler {
         } else {
             var resultData: MemberReadModel = result!.data;
             this.setMsgSuccess(`Membro salvo com sucesso`);
-            
+
             return true;
         }
     }
 
     public async delete(id: number) {
-        var result = await  this.service.delete(id);
-  
+        var result = await this.service.delete(id);
+
         if (result!.errors != null && result!.errors.length > 0) {
-          result!.errors.forEach(x => {
-              this.setMsgErro(x);
-          })
-          return false;
-          } else {
-              this.setMsgSuccess("membro excluído com sucesso");
-              return true;
-          }
-      }
+            result!.errors.forEach(x => {
+                this.setMsgErro(x);
+            })
+            return false;
+        } else {
+            this.setMsgSuccess("membro excluído com sucesso");
+            return true;
+        }
+    }
 
     private async validate(model: MemberEditModel): Promise<boolean> {
         if (model.name.length <= 0 || model.dateBirth.length <= 0 || model.description == "" || model.postIds.length <= 0) {
