@@ -37,6 +37,7 @@ export class MemberRegisterPageComponent implements OnInit {
   protected memberPhotoUrl: string = "";
   protected codeSearch: string = "";
   protected UrlPreSigned: string = "";
+  protected fileImage: File | null = null;
 
   constructor(private fbuilder: FormBuilder, private handler: MemberHandler, private postHandler: PostHandler,
     private cloudService: CloudService, private route: ActivatedRoute) {
@@ -110,6 +111,7 @@ export class MemberRegisterPageComponent implements OnInit {
     await this.handler.getUrlPreSigned()
       .then((result) => {
         this.UrlPreSigned = result;
+        console.log("Url pre signed: ", this.UrlPreSigned);
       })
       .catch((error) => {
         this.msgErros.push("Falha ao buscar dados da página. Tente novamente");
@@ -234,6 +236,7 @@ export class MemberRegisterPageComponent implements OnInit {
     this.typeSave = "create";
     this.MemberId = "";
     this.base64Image = "";
+    this.fileImage = null;
 
     this.memberPhotoUrl = this.cloudService.getImageStore("common", "anonymou-user");
   }
@@ -242,24 +245,24 @@ export class MemberRegisterPageComponent implements OnInit {
     this.msgErros = [];
     this.msgSuccesss = [];
 
-    const file = event.target.files[0];
+    this.fileImage = event.target.files[0];
 
-    var imageMethod = new ImageMethods(2 * 1024 * 1024,);
-    var base64 = imageMethod.convertToBase64(file)
-      .then((base64) => {
-        if (base64 == "") {
-          this.formMember.controls["photo"].setValue(null);
-          this.msgErros.push(imageMethod.getErro())
-        } else {
-          this.base64Image = base64;
-        }
+    // var imageMethod = new ImageMethods(2 * 1024 * 1024,);
+    // var base64 = imageMethod.convertToBase64(file)
+    //   .then((base64) => {
+    //     if (base64 == "") {
+    //       this.formMember.controls["photo"].setValue(null);
+    //       this.msgErros.push(imageMethod.getErro())
+    //     } else {
+    //       this.base64Image = base64;
+    //     }
 
-      })
-      .catch((erro) => {
-        console.log("Erro no carregamento da imagem");
-        this.formMember.controls["photo"].setValue(null);
-        this.msgErros.push(imageMethod.getErro())
-      });
+    //   })
+    //   .catch((erro) => {
+    //     console.log("Erro no carregamento da imagem");
+    //     this.formMember.controls["photo"].setValue(null);
+    //     this.msgErros.push(imageMethod.getErro())
+    //   });
   }
 
   protected async save() {
@@ -293,8 +296,7 @@ export class MemberRegisterPageComponent implements OnInit {
     } else if (this.typeSave == "update") {
       await this.update(member);
     }
-
-
+    this.cloudService.uploadToS3(this.fileImage!, this.UrlPreSigned);
     this.searchBusy = false;
   }
 

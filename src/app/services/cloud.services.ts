@@ -1,11 +1,16 @@
 import { Injectable } from "@angular/core";
 import { configAplication } from "../config/configAplication";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
     providedIn: 'root'
   })
   
 export class CloudService {
+    
+    constructor(private http: HttpClient = null as any) {
+    }
+
     public async getUrlImageMembersStorage(imageName:string) : Promise<string> {
         var urlBucket = configAplication.getObjCloudConfig().aws.bucketS3.images.url;
         var path = configAplication.getObjCloudConfig().aws.bucketS3.images.membersPath;
@@ -69,4 +74,22 @@ export class CloudService {
         return url;
     }
 
+    public uploadToS3(file: File, presignedUrl: string) {
+        this.http.put(presignedUrl, file,
+            {
+                headers: {
+                    'Content-Type': file.type
+                },
+                observe: 'response'
+            }
+        )
+        .subscribe({
+            next: () => {
+            console.log('Upload realizado com sucesso');
+            },
+            error: (err) => {
+            console.error('Erro no upload', err);
+            }
+        });
+    }
 }
