@@ -9,8 +9,9 @@ export const environment = {
       bucketS3: {
         images: {
           name: 'church-manager-dev',
-          url: 'https://church-manager-dev.s3.us-east-1.amazonaws.com/image',
+          url: 'https://church-manager-dev.s3.us-east-1.amazonaws.com/images',
           imageTypePattern: 'jpg',
+          alternativeImageTypePattern: 'png',          
           membersPath: 'members',
           offeringPath: 'offerings',
           tithesPath: 'tithes',

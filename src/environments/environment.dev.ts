@@ -8,9 +8,10 @@ export const environment = {
         region: 'us-eats-1',
         bucketS3: {
           images: {
-            name: 'churchmanager-dev',
-            url: 'https://churchmanager-dev.s3.us-east-1.amazonaws.com/image',
+            name: 'churchmanager-uat',
+            url: 'https://church-manager-uat.s3.us-east-1.amazonaws.com/images',
             imageTypePattern: 'jpg',
+            alternativeImageTypePattern: 'png',
             membersPath: 'members',
             offeringPath: 'offerings',
             tithesPath: 'tithes',

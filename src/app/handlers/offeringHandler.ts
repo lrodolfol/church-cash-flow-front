@@ -65,6 +65,18 @@ export class OfferingHandler extends BaseHandler {
         }
     }
 
+    public async getUrlPreSigned(): Promise<string> {
+        var result: ResultViewModel = await this.service.getUrlPreSigned();
+        if (result!.errors != null && result!.errors.length > 0) {
+            result!.errors.forEach(x => {
+                this.setMsgErro(x);
+            })
+            return "";
+        } else {
+            return result.data;
+        }
+    }
+
     public async getById(id: number) : Promise<ResultViewModel>{
         var result: ResultViewModel = await this.service.searchOfferingById(id);
         return result;

@@ -111,7 +111,7 @@ export class MemberRegisterPageComponent implements OnInit {
     await this.handler.getUrlPreSigned()
       .then((result) => {
         this.UrlPreSigned = result;
-        console.log("Url pre signed: ", this.UrlPreSigned);
+        //console.log("Url pre signed: ", this.UrlPreSigned);
       })
       .catch((error) => {
         this.msgErros.push("Falha ao buscar dados da página. Tente novamente");
@@ -239,6 +239,7 @@ export class MemberRegisterPageComponent implements OnInit {
     this.fileImage = null;
 
     this.memberPhotoUrl = this.cloudService.getImageStore("common", "anonymou-user");
+    this.getUrlPreSigned();
   }
 
   protected loadImage(event: any) {
@@ -266,6 +267,19 @@ export class MemberRegisterPageComponent implements OnInit {
   }
 
   protected async save() {
+    this.msgErros = [];
+    this.msgSuccesss = [];
+
+    if (this.formMember.invalid) {
+      if (this.formMember.controls['name'].invalid)
+        this.msgErros.push("Nome completo é obrigatório");
+      if (this.formMember.controls['dateBirth'].invalid)
+        this.msgErros.push("Data de nascimento é obrigatória");
+      if (this.formMember.controls['dateRegister'].invalid)
+        this.msgErros.push("Data de cadastro é obrigatória");
+      return;
+    }
+
     this.searchBusy = true;
 
     var member: MemberEditModel = this.formMember.value;
@@ -296,7 +310,11 @@ export class MemberRegisterPageComponent implements OnInit {
     } else if (this.typeSave == "update") {
       await this.update(member);
     }
-    this.cloudService.uploadToS3(this.fileImage!, this.UrlPreSigned);
+    if (this.fileImage) {
+      await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
+    }
+    
+    this.clear();
     this.searchBusy = false;
   }
 

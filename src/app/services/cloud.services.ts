@@ -44,6 +44,7 @@ export class CloudService {
         var url = `${urlBucket}/${path}/${imageName}.${extensionImage}`;
                 
         //console.log(`${urlBucket}/${path}/${imageName}.${extensionImage}`);
+        console.log(url);   
         return `${urlBucket}/${path}/${imageName}.${extensionImage}`;
 
     }
@@ -74,22 +75,20 @@ export class CloudService {
         return url;
     }
 
-    public uploadToS3(file: File, presignedUrl: string) {
-        this.http.put(presignedUrl, file,
-            {
-                headers: {
-                    'Content-Type': file.type
-                },
-                observe: 'response'
-            }
-        )
-        .subscribe({
-            next: () => {
-            console.log('Upload realizado com sucesso');
-            },
-            error: (err) => {
-            console.error('Erro no upload', err);
+    public async uploadToS3(file: File, presignedUrl: string): Promise<void> {
+        const response = await fetch(presignedUrl, {
+            method: 'PUT',
+            body: file,
+            headers: {
+                'Content-Type': file.type
             }
         });
+
+        if (!response.ok) {
+            console.error('Erro no upload', response.status, response.statusText);
+            throw new Error(`Upload falhou: ${response.status}`);
+        }
+
+        console.log('Upload realizado com sucesso');
     }
 }

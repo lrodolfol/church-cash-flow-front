@@ -24,6 +24,8 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
   protected outFlowKindToSelect!: [string, string][]
 
   private codeSearch: number = 0;
+  protected UrlPreSigned: string = "";
+  protected fileImage: File | null = null;
 
   constructor(private handler: OutFlowHandler, private handlerOutFlowKind: OutFlowKindHandler, private fbuilder: FormBuilder,
     private route: ActivatedRoute, private cloudService: CloudService) {
@@ -80,6 +82,17 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
       });
 
     await this.dashBoard();
+    await this.getUrlPreSigned();
+  }
+
+  async getUrlPreSigned() {
+    await this.handler.getUrlPreSigned()
+      .then((result) => {
+        this.UrlPreSigned = result;
+      })
+      .catch((error) => {
+        this.msgErros.push("Falha ao buscar dados da página. Tente novamente");
+      });
   }
   
  
@@ -126,19 +139,25 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
     this.formSearch.reset();
 
     this.typeSave = "create";
+    this.fileImage = null;
+    this.getUrlPreSigned();
   }
 
   protected async save() {
     this.searchBusy = true;
-    
+
     if (this.typeSave == "create") {
       if(this.formOutflow.invalid)
         return;
-        
+
       await this.create(this.formOutflow.value)
 
     } else if (this.typeSave == "update") {
       await this.update(this.formOutflow.value, this.formSearch.value.code);
+    }
+
+    if (this.fileImage) {
+      await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
     }
 
     this.searchBusy = false;

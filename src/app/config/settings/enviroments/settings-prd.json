@@ -8,7 +8,7 @@
           "bucketS3": {
             "images": {
               "ame": "church-manager-prd",
-              "url":"https://church-manager-dev.s3.us-east-1.amazonaws.com/image",
+              "url":"https://church-manager-dev.s3.us-east-1.amazonaws.com/images",
               "imageTypePattern": "jpg",
               "membersPath": "members",
               "offeringPath": "offerings",

@@ -9,6 +9,7 @@ import { ChurchReadModel } from 'src/app/models/ReadModels/ChurchRead.models';
 import { UserReadModel } from 'src/app/models/ReadModels/UserRead.model';
 import { ResultViewModel } from 'src/app/models/churchEntitieModels/resultViewModel.models';
 import { RegistersPageComponent } from 'src/app/pages/shared/registers-page/registers-page.component';
+import { CloudService } from 'src/app/services/cloud.services';
 
 @Component({
   selector: 'app-secretary-register-page',
@@ -25,8 +26,11 @@ export class SecretaryRegisterPageComponent extends RegistersPageComponent imple
   protected RoleIdSelected: number[] = [];
   protected RoleToSelect!: [string, number][];
   private idSearch = "";
-  
-  constructor(private fbuilder: FormBuilder, private handler: userHandler, private churchHandler: ChurchHadler, private route: ActivatedRoute) {
+  protected UrlPreSigned: string = "";
+  protected fileImage: File | null = null;
+
+  constructor(private fbuilder: FormBuilder, private handler: userHandler, private churchHandler: ChurchHadler,
+    private route: ActivatedRoute, private cloudService: CloudService) {
     super();
     this.formSearch = this.fbuilder.group({
       codeSearch: ['', Validators.compose([
@@ -50,15 +54,26 @@ export class SecretaryRegisterPageComponent extends RegistersPageComponent imple
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.route.queryParams
     .subscribe(params => {
       this.idSearch = params['id'];
     });
-      
+
     this.clear();
     this.loadPosts();
     this.dashBoard();
+    await this.getUrlPreSigned();
+  }
+
+  async getUrlPreSigned() {
+    await this.handler.getUrlPreSigned()
+      .then((result) => {
+        this.UrlPreSigned = result;
+      })
+      .catch((error) => {
+        this.msgErros.push("Falha ao buscar dados da página. Tente novamente");
+      });
   }
 
   protected override clearForm(): void {
@@ -72,6 +87,8 @@ export class SecretaryRegisterPageComponent extends RegistersPageComponent imple
     this.clearForm();
     this.typeSave = "create";
     this.RoleIdSelected = [];
+    this.fileImage = null;
+    this.getUrlPreSigned();
   }
 
   protected async save() {
@@ -95,6 +112,10 @@ export class SecretaryRegisterPageComponent extends RegistersPageComponent imple
     var result = await this.handler.create(userEdit);
     this.msgErros = this.handler.getMsgErro();
     this.msgSuccesss = this.handler.getMsgSuccess();
+
+    if (this.fileImage) {
+      await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
+    }
 
     this.handler.clear();
   }

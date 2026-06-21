@@ -34,6 +34,8 @@ export class offeringRegisterPageComponent extends RegistersPageComponent implem
   public meetingKindSelected: string | undefined;
 
   private codeSearch: number = 0;
+  protected UrlPreSigned: string = "";
+  protected fileImage: File | null = null;
 
   constructor(private offeringHandler: OfferingHandler, private offeringKindService: OfferingKindService, 
     private meetingKindService: MeetingKindService, private fbuilder: FormBuilder, private route: ActivatedRoute, 
@@ -88,6 +90,17 @@ export class offeringRegisterPageComponent extends RegistersPageComponent implem
     });
 
     await this.dashBoard();
+    await this.getUrlPreSigned();
+  }
+
+  async getUrlPreSigned() {
+    await this.offeringHandler.getUrlPreSigned()
+      .then((result) => {
+        this.UrlPreSigned = result;
+      })
+      .catch((error) => {
+        this.msgErros.push("Falha ao buscar dados da página. Tente novamente");
+      });
   }
 
   public async dashBoard() {
@@ -204,17 +217,23 @@ export class offeringRegisterPageComponent extends RegistersPageComponent implem
     this.clearCommonObj();
     this.formTreasury.reset();
     this.formSearchTreasury.reset();
+    this.fileImage = null;
+    this.getUrlPreSigned();
   }
 
   protected async saveOffering() {
     this.searchBusy = true;
-    
+
     if (this.typeSave == "create") {
       await this.createOffering(this.formTreasury.value)
     } else if (this.typeSave == "update") {
       await this.updateOffering(this.formTreasury.value, this.formSearchTreasury.value.code);
     }
-    
+
+    if (this.fileImage) {
+      await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
+    }
+
     this.searchBusy = false;
   }
 
@@ -316,27 +335,7 @@ export class offeringRegisterPageComponent extends RegistersPageComponent implem
   protected loadImage(event: any) {
     this.msgErros = [];
     this.msgSuccesss = [];
-
-    const file = event.target.files[0];
-
-    var imageMethod = new ImageMethods(2 * 1024 * 1024,);
-    var base64 = imageMethod.convertToBase64(file)
-      .then((base64) => {
-        if(base64 == "")  {
-          this.formTreasury.controls["photo"].setValue(null);
-          this.msgErros.push(imageMethod.getErro())
-        }else{
-          this.base64Image = base64;
-        }
-        
-      })
-      .catch((erro) => {
-        console.log("Erro no carregamento da imagem");
-        this.formTreasury.controls["photo"].setValue(null);
-        this.msgErros.push(imageMethod.getErro())
-      });
-
-      console.log(this.base64Image);
+    this.fileImage = event.target.files[0];
   }
 
 }

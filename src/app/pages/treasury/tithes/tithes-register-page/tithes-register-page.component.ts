@@ -32,6 +32,8 @@ export class TithesRegisterPageComponent extends RegistersPageComponent implemen
   public offeringKindSelected: string | undefined;
   public meetingKindSelected: string | undefined;
   private codeSearch: number = 0;
+  protected UrlPreSigned: string = "";
+  protected fileImage: File | null = null;
 
   constructor(private handler: TithesHandler, private offeringKindService: OfferingKindService, private churchHandler: ChurchHadler,
     private fbuilder: FormBuilder, private route: ActivatedRoute, private cloudService: CloudService) {
@@ -77,6 +79,17 @@ export class TithesRegisterPageComponent extends RegistersPageComponent implemen
       });
 
     await this.dashBoard();
+    await this.getUrlPreSigned();
+  }
+
+  async getUrlPreSigned() {
+    await this.handler.getUrlPreSigned()
+      .then((result) => {
+        this.UrlPreSigned = result;
+      })
+      .catch((error) => {
+        this.msgErros.push("Falha ao buscar dados da página. Tente novamente");
+      });
   }
 
   public async dashBoard() {
@@ -197,19 +210,25 @@ export class TithesRegisterPageComponent extends RegistersPageComponent implemen
 
     this.typeSave = "create";
     this.imageUrl = "";
+    this.fileImage = null;
+    this.getUrlPreSigned();
   }
 
   protected async save() {
     this.searchBusy = true;
-    
+
     if (this.typeSave == "create") {
       if(this.formTreasury.invalid)
         return;
-        
+
       await this.create(this.formTreasury.value)
 
     } else if (this.typeSave == "update") {
       await this.update(this.formTreasury.value, this.formSearchTreasury.value.code);
+    }
+
+    if (this.fileImage) {
+      await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
     }
 
     this.searchBusy = false;
@@ -311,24 +330,6 @@ export class TithesRegisterPageComponent extends RegistersPageComponent implemen
   protected loadImage(event: any) {
     this.msgErros = [];
     this.msgSuccesss = [];
-
-    const file = event.target.files[0];
-
-    var imageMethod = new ImageMethods(2 * 1024 * 1024,);
-    var base64 = imageMethod.convertToBase64(file)
-      .then((base64) => {
-        if(base64 == "")  {
-          this.formTreasury.controls["photo"].setValue(null);
-          this.msgErros.push(imageMethod.getErro())
-        }else{
-          this.base64Image = base64;
-        }
-        
-      })
-      .catch((erro) => {
-        console.log("Erro no carregamento da imagem");
-        this.formTreasury.controls["photo"].setValue(null);
-        this.msgErros.push(imageMethod.getErro())
-      });
+    this.fileImage = event.target.files[0];
   }
 }
