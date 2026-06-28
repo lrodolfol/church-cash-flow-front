@@ -11,7 +11,6 @@ export class FirstFruitsEditModel extends EntitieResultApi {
     TotalAmount: number = 0;
     OfferingKindId: number = 0;
     ChurchId: number = 0;
-    base64Image: string = "";
     MemberId: number = 0;
 
     public ConvertTo(model: FirstFruits) : FirstFruitsEditModel  {

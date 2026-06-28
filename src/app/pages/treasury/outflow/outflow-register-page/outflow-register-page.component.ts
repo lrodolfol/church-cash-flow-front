@@ -266,5 +266,11 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
 
       this.formOutflow.controls['resume'].setValue(resume);
     }
-  }  
+  }
+
+  protected loadImage(event: any) {
+    this.msgErros = [];
+    this.msgSuccesss = [];
+    this.fileImage = event.target.files[0];
+  }
 }

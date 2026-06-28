@@ -218,18 +218,19 @@ export class FirstFruitsRegisterPageComponent extends RegistersPageComponent imp
     }
 
     if (this.fileImage) {
+      console.log("Uploading image to S3");
       await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
+    }else{
+      console.log("No image to upload");
     }
 
     this.searchBusy = false;
+    this.getUrlPreSigned();
   }
 
   private async create(model: FirstFruits) {
-    this.clearForm();
-
     var editDto = new FirstFruitsEditModel();
     var dto = editDto.ConvertTo(model);
-    dto.base64Image = this.base64Image;
 
     var create = await this.handler.create(dto)
       .then((result) => {
@@ -245,7 +246,6 @@ export class FirstFruitsRegisterPageComponent extends RegistersPageComponent imp
   private async update(model: FirstFruits, modelId: string) {
     var editDto = new FirstFruitsEditModel();
     var dto = editDto.ConvertTo(model);
-    dto.base64Image = this.base64Image;
 
     this.handler.update(dto, modelId)
       .then((result) => {
@@ -322,6 +322,7 @@ export class FirstFruitsRegisterPageComponent extends RegistersPageComponent imp
     this.msgErros = [];
     this.msgSuccesss = [];
     this.fileImage = event.target.files[0];
+    console.log("Selected file:", this.fileImage);
   }
 
 }

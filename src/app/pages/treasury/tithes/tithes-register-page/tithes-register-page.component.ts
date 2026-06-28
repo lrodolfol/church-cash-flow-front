@@ -202,6 +202,10 @@ export class TithesRegisterPageComponent extends RegistersPageComponent implemen
   }
 
   protected async clearForm() {
+    this.busy = false;
+    this.imageBusy = false;
+    this.searchBusy = false;
+    
     this.handler.clear();
     this.clearCommonObj();
 
@@ -231,7 +235,7 @@ export class TithesRegisterPageComponent extends RegistersPageComponent implemen
       await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
     }
 
-    this.searchBusy = false;
+    this.clearForm();
   }
 
   private async create(model: Tithes) {
