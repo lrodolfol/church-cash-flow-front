@@ -151,7 +151,7 @@ export class MemberRegisterPageComponent implements OnInit {
 
     if (model.photo != null && model.photo.length > 5) {
       this.filebusy = true;
-      this.memberPhotoUrl = await this.cloudService.getUrlImageMembersStorage(model.code);
+      this.memberPhotoUrl = await this.cloudService.getUrlImageMembersStorage("members_"+model.photo);
       this.filebusy = false;
     }
 
@@ -269,7 +269,7 @@ export class MemberRegisterPageComponent implements OnInit {
   protected async save() {
     this.msgErros = [];
     this.msgSuccesss = [];
-
+    
     if (this.formMember.invalid) {
       if (this.formMember.controls['name'].invalid)
         this.msgErros.push("Nome completo é obrigatório");
@@ -305,6 +305,7 @@ export class MemberRegisterPageComponent implements OnInit {
       member.editMemberOutDto = memberOutEditDto;
     }
 
+    member.Photo = this.UrlPreSigned;
     if (this.typeSave == "create") {
       await this.create(member);
     } else if (this.typeSave == "update") {
@@ -314,7 +315,6 @@ export class MemberRegisterPageComponent implements OnInit {
       await this.cloudService.uploadToS3(this.fileImage, this.UrlPreSigned);
     }
     
-    this.clear();
     this.searchBusy = false;
   }
 

@@ -16,6 +16,7 @@ export class CloudService {
         var path = configAplication.getObjCloudConfig().aws.bucketS3.images.membersPath;
         var extensionImage = configAplication.getObjCloudConfig().aws.bucketS3.images.imageTypePattern;
         var url = `${urlBucket}/${path}/${imageName}.${extensionImage}`;
+        console.log("URL: ", url);
 
         return url;
     }
