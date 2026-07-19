@@ -16,7 +16,7 @@ export class CloudService {
         var path = configAplication.getObjCloudConfig().aws.bucketS3.images.membersPath;
         var extensionImage = configAplication.getObjCloudConfig().aws.bucketS3.images.imageTypePattern;
         var url = `${urlBucket}/${path}/${imageName}.${extensionImage}`;
-        console.log("URL: ", url);
+        //console.log("URL: ", url);
 
         return url;
     }
@@ -43,9 +43,7 @@ export class CloudService {
         var urlBucket = configAplication.getObjCloudConfig().aws.bucketS3.images.url;
         var extensionImage = configAplication.getObjCloudConfig().aws.bucketS3.images.imageTypePattern;
         var url = `${urlBucket}/${path}/${imageName}.${extensionImage}`;
-                
-        //console.log(`${urlBucket}/${path}/${imageName}.${extensionImage}`);
-        console.log(url);   
+
         return `${urlBucket}/${path}/${imageName}.${extensionImage}`;
 
     }
@@ -89,7 +87,5 @@ export class CloudService {
             console.error('Erro no upload', response.status, response.statusText);
             throw new Error(`Upload falhou: ${response.status}`);
         }
-
-        console.log('Upload realizado com sucesso');
     }
 }

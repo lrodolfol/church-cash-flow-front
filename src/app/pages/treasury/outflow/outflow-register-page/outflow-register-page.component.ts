@@ -19,7 +19,7 @@ import { ImageMethods } from 'src/app/utils/ImagesMethods.utils';
 export class OutflowRegisterPageComponent extends RegistersPageComponent{
   protected formOutflow!: FormGroup;
   protected formSearch!: FormGroup;
-
+  
   protected outFlowKind!: ResultViewModel['data'];
   protected outFlowKindToSelect!: [string, string][]
 
@@ -30,7 +30,6 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
   constructor(private handler: OutFlowHandler, private handlerOutFlowKind: OutFlowKindHandler, private fbuilder: FormBuilder,
     private route: ActivatedRoute, private cloudService: CloudService) {
     super();
-
     this.formSearch = this.fbuilder.group({
       code: ['']
     });
@@ -76,6 +75,7 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
   }
 
   async ngOnInit() {
+    this.clearForm();
     this.route.queryParams
       .subscribe(params => {
         this.codeSearch = params['id'];
@@ -141,6 +141,7 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
     this.typeSave = "create";
     this.fileImage = null;
     this.getUrlPreSigned();
+    this.imageUrl = this.cloudService.getImageStore("common", "anonymou-user");
   }
 
   protected async save() {
@@ -165,6 +166,7 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
   private async create(model: OutflowEditModel) {
     model.base64Image = this.base64Image;
     model.authorized = true;
+    model.Photo = this.UrlPreSigned;
     var create = await this.handler.create(model)
       .then((result) => {
         console.log(result);
@@ -208,8 +210,12 @@ export class OutflowRegisterPageComponent extends RegistersPageComponent{
 
     this.typeSave = "update";
     var objTithes: OutFlowReadModel = modelToForm.data;
-
+    this.hiddenImage = false;
     this.fillFormWithModel(objTithes, code);
+    
+    if(objTithes.photo != null && objTithes.photo != ""){
+      this.imageUrl = this.cloudService.getUrlImageOutFlowStorage("outflow_"+objTithes.photo);
+    }
 
     this.searchBusy = false
   }

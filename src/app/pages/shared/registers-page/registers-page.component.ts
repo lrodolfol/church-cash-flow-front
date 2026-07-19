@@ -15,7 +15,7 @@ export abstract class RegistersPageComponent {
   
   protected busy = false;
   protected searchBusy = false;
-  protected hiddenImage = true;
+  protected hiddenImage = false;
   protected imageBusy : boolean = false;
   
   protected msgErros: string[] = [];

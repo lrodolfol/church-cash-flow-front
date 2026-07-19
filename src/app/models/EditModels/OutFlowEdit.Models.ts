@@ -1,4 +1,6 @@
-export class OutflowEditModel {
+import { BaseModel } from "./BaseModel.model";
+
+export class OutflowEditModel extends BaseModel {
     active: boolean = true;
     day: string = "";
     competence: string = "";
